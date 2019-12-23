@@ -1,0 +1,8 @@
+<div class="pool" *ngIf="pool">
+  {{ pool.text }}
+
+  <div class="anwsers">
+    <div *ngFor="let answer of pool.answers" class="anwser">{{ answer.text }}</div>
+  </div>
+
+</div>

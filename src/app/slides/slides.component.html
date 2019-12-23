@@ -1,0 +1,6 @@
+<app-slide *ngIf="slides[iCurrentSlide]" [slide]="slides[iCurrentSlide]"></app-slide>
+
+<div class="navigation">
+  <button (click)="previous()">Previous</button>
+  <button (click)="next()">Next</button>
+</div>
