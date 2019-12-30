@@ -70,7 +70,23 @@ export class SpeakerService {
     }).pipe(map(v => v.slides[0]));
   }
 
-  clearAllResponses() {
-
+  clearAllResponses(idProject: string) {
+    return this.client.request(`
+    mutation ($idProject: ID!) {
+      deleteManyParticipants(where: {
+        answer: {
+          slide: {
+            project: {
+              id: $idProject
+            }
+          }
+        }
+      }) {
+        count
+      }
+    }
+    `, {
+      idProject
+    });
   }
 }

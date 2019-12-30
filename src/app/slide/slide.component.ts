@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {WebsocketService} from '../websocket.service';
 import {SpeakerService} from '../speaker.service';
 
@@ -7,9 +7,10 @@ import {SpeakerService} from '../speaker.service';
   templateUrl: './slide.component.html',
   styleUrls: ['./slide.component.css']
 })
-export class SlideComponent implements OnInit, OnDestroy {
+export class SlideComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() slide;
+  showResponses = false;
 
   $socketSubscription;
 
@@ -17,6 +18,14 @@ export class SlideComponent implements OnInit, OnDestroy {
     private socket: WebsocketService,
     private client: SpeakerService
   ) { }
+
+  onSlideChange() {
+    this.showResponses = false;
+  }
+
+  ngOnChanges() {
+    this.onSlideChange();
+  }
 
   ngOnInit() {
     console.log('slide', this.slide);
@@ -43,6 +52,10 @@ export class SlideComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.$socketSubscription.unsubscribe();
+  }
+
+  togleShowResponse() {
+    this.showResponses = !this.showResponses;
   }
 
 

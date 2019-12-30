@@ -45,4 +45,9 @@ export class SlidesComponent implements OnInit {
     this.speakerService.setCurrentSlide(this.idProject, this.slides[this.iCurrentSlide].id).subscribe();
   }
 
+  deleteResponses() {
+    this.speakerService.clearAllResponses(this.idProject).subscribe(() => {
+      document.location.reload(true);
+    });
+  }
 }

@@ -13,3 +13,8 @@
   margin-top: 20px;
 }
 
+.navigation2 {
+  position: fixed;
+  bottom: 25px;
+  right: 5px;
+}
