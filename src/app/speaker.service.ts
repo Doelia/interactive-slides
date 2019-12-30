@@ -8,7 +8,7 @@ import {map} from 'rxjs/operators';
 export class SpeakerService {
 
   constructor(private client: GraphqlService) { }
-  
+
   getSlides(idProject: string): any {
     return this.client.request(`
       query ($id: ID!) {
@@ -20,6 +20,9 @@ export class SpeakerService {
             text
             answers {
               text
+              participants {
+                token
+              }
             }
           }
         }
@@ -44,5 +47,9 @@ export class SpeakerService {
       id_project: idProject,
       id_slide: idSlide,
     });
+  }
+
+  clearAllResponses() {
+
   }
 }

@@ -1,7 +1,10 @@
 <div class="slide">
   <div class="title"> {{ slide.text }} </div>
   <div class="anwsers">
-    <div *ngFor="let answer of slide.answers" class="anwser">{{ answer.text }}</div>
+    <div *ngFor="let answer of slide.answers" class="anwser">
+      {{ answer.text }}
+      <span class="participants">{{ answer.participants.length }}</span>
+    </div>
   </div>
 </div>
 

@@ -12,12 +12,7 @@ import {PoolService} from '../pool.service';
 export class PoolComponent implements OnInit {
 
   public pool: any = null;
-  public myresponse: {
-      id: string,
-      answer: {
-          id: string
-      }
-  } = null;
+  public myresponse = null;
 
   constructor(
       private poolService: PoolService,
@@ -52,27 +47,27 @@ export class PoolComponent implements OnInit {
         });
     }
 
-  loadSlide(idSlide: string) {
-      const token = this.tokenService.getToken();
+    loadSlide(idSlide: string) {
+        const token = this.tokenService.getToken();
+        this.myresponse = '';
         this.poolService.getPoolOfSlide(idSlide, token).subscribe(pool => {
             this.pool = pool;
             pool.answers.forEach(answer => {
                 if (answer.participants.length) {
-                    this.myresponse = answer.participants[0];
+                    this.myresponse = answer.participants[0].answer.id;
                     console.log('myresponse', this.myresponse);
                 }
             });
         });
-  }
+    }
 
   voteFor(idAnswer: string) {
-      if (this.myresponse) {
-          this.poolService.removeVote(this.myresponse.id).subscribe();
-      }
       const token = this.tokenService.getToken();
-      this.poolService.voteFor(idAnswer, token).subscribe(v => {
-          this.myresponse = v;
-          console.log('myresponse', this.myresponse);
+      this.myresponse = idAnswer;
+      this.poolService.removeVote(this.pool.id, token).subscribe(() => {
+          this.poolService.voteFor(idAnswer, token).subscribe(v => {
+              console.log('myresponse', this.myresponse);
+          });
       });
   }
 

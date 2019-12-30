@@ -1,12 +1,12 @@
 <div class="pool" *ngIf="pool">
   {{ pool.text }}
 
-  <div class="anwsers">
+  <div class="answers">
     <div
             *ngFor="let answer of pool.answers"
-            class="anwser"
-            [class.choosen]="myresponse && myresponse.answer.id === answer.id"
-            (click)="voteFor(answer.id)">{{ answer.text }}
+            class="answer"
+            [class.choosen]="myresponse === answer.id"
+            (click)="voteFor(answer.id)">{{ answer.text }} ({{answer.id}})
 
     </div>
   </div>

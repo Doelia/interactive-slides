@@ -11,7 +11,7 @@ export class PoolService {
   constructor(private client: GraphqlService) { }
 
     getCurrentSlide(idProject: string): Observable<string> {
-        return this.client.request<string>(`
+        return this.client.request(`
     query ($id: ID!) {
         project(where: {
           id: $id
@@ -89,17 +89,22 @@ export class PoolService {
         }).pipe(map(v => v.createParticipant));
     }
 
-    removeVote(id) {
+    removeVote(idSlide, token) {
         return this.client.request(`
-        mutation ($id: ID!) {
-          deleteParticipant(where: {
-            id: $id
-          }) {
-            id
-          }
-        }
-    `, {
-            id
+      # Write your query or mutation here
+mutation ($idSlide: ID!, $token: String!) {
+  deleteManyParticipants(where: {
+    token: $token,
+    answer: {
+      slide: {
+        id: $idSlide
+      }
+    }
+  }) {count}
+}
+      `, {
+          idSlide,
+          token
         });
     }
 }
