@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {GraphqlService} from "../graphql.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute} from '@angular/router';
 import {WebsocketService} from '../websocket.service';
+import {TokenService} from '../token.service';
+import {PoolService} from '../pool.service';
 
 @Component({
   selector: 'app-pool',
@@ -11,20 +12,28 @@ import {WebsocketService} from '../websocket.service';
 export class PoolComponent implements OnInit {
 
   public pool: any = null;
+  public myresponse: {
+      id: string,
+      answer: {
+          id: string
+      }
+  } = null;
 
   constructor(
-      private client: GraphqlService,
+      private poolService: PoolService,
       private route: ActivatedRoute,
       private socket: WebsocketService,
+      private tokenService: TokenService
   ) { }
 
-  ngOnInit() {
-    const idProject = this.route.snapshot.paramMap.get('id');
-    this.client.getCurrentSlide(idProject).subscribe(idSlide => {
-        this.loadSlide(idSlide);
-    });
+    ngOnInit() {
 
-      this.socket.subscribeTo(`
+        const idProject = this.route.snapshot.paramMap.get('id');
+        this.poolService.getCurrentSlide(idProject).subscribe(idSlide => {
+            this.loadSlide(idSlide);
+        });
+
+        this.socket.subscribeTo(`
         subscription {
           project(where: {
             node: {
@@ -39,12 +48,32 @@ export class PoolComponent implements OnInit {
           }
         }
       `).subscribe(event => {
-        this.loadSlide(event.project.node.currentSlide);
-      });
-  }
+            this.loadSlide(event.project.node.currentSlide);
+        });
+    }
 
   loadSlide(idSlide: string) {
-    this.client.getPoolOfSlide(idSlide).subscribe(pool => this.pool = pool);
+      const token = this.tokenService.getToken();
+        this.poolService.getPoolOfSlide(idSlide, token).subscribe(pool => {
+            this.pool = pool;
+            pool.answers.forEach(answer => {
+                if (answer.participants.length) {
+                    this.myresponse = answer.participants[0];
+                    console.log('myresponse', this.myresponse);
+                }
+            });
+        });
+  }
+
+  voteFor(idAnswer: string) {
+      if (this.myresponse) {
+          this.poolService.removeVote(this.myresponse.id).subscribe();
+      }
+      const token = this.tokenService.getToken();
+      this.poolService.voteFor(idAnswer, token).subscribe(v => {
+          this.myresponse = v;
+          console.log('myresponse', this.myresponse);
+      });
   }
 
 

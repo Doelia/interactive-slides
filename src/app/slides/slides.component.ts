@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {GraphqlService} from '../graphql.service';
 import {ActivatedRoute} from "@angular/router";
-import {switchMap} from "rxjs/operators";
+import {SpeakerService} from '../speaker.service';
 
 @Component({
   selector: 'app-slides',
@@ -14,12 +13,12 @@ export class SlidesComponent implements OnInit {
   iCurrentSlide = 0;
   idProject: string = '1234';
 
-  constructor(private client: GraphqlService, private route: ActivatedRoute) { }
+  constructor(private speakerService: SpeakerService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.idProject = this.route.snapshot.paramMap.get('id');
 
-    this.client.getSlides(this.idProject).subscribe(slides => {
+    this.speakerService.getSlides(this.idProject).subscribe(slides => {
       this.slides = slides;
       this.iCurrentSlide = 0;
       this.sendCurrentSlide();
@@ -43,7 +42,7 @@ export class SlidesComponent implements OnInit {
   }
 
   private sendCurrentSlide() {
-    this.client.setCurrentSlide(this.idProject, this.slides[this.iCurrentSlide].id).subscribe();
+    this.speakerService.setCurrentSlide(this.idProject, this.slides[this.iCurrentSlide].id).subscribe();
   }
 
 }
