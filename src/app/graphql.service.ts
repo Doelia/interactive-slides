@@ -8,7 +8,8 @@ import {Observable} from "rxjs";
 })
 export class GraphqlService {
 
-  endpoint = 'https://api-euwest.graphcms.com/v1/ck4iiajnn0azp01bq3s8v5pfq/master';
+  // endpoint = 'https://api-euwest.graphcms.com/v1/ck4iiajnn0azp01bq3s8v5pfq/master';
+    endpoint = 'https://eu1.prisma.sh/stephane-wouters-5362a4/slides/dev/';
 
   constructor(private http: HttpClient) { }
 
@@ -44,11 +45,7 @@ export class GraphqlService {
     return this.request(`
       mutation ($id_slide: ID!, $id_project: ID!) {
       updateProject(data: {
-        currentSlide: {
-          connect: {
-            id: $id_slide
-          }
-        }
+        currentSlide: $id_slide
       }, where: {
         id: $id_project
       }) {
@@ -61,22 +58,36 @@ export class GraphqlService {
   }
 
 
-  getCurrentPool(idProject: string): any {
-    return this.request(`
+  getCurrentSlide(idProject: string): Observable<string> {
+    return this.request<string>(`
     query ($id: ID!) {
         project(where: {
           id: $id
         }) {
-          currentSlide {
-            text
-            answers {
-              text
-            }
-          }
+          currentSlide
         }
     }`, {
       id: idProject
     }).pipe(map(v => v.project.currentSlide));
+
+  }
+
+  getPoolOfSlide(idSlide: string): any {
+      return this.request(`
+    query ($id: ID!) {
+        slide(where: {
+          id: $id
+        }) {
+        id
+        text
+        answers {
+          id
+          text
+        }
+        }
+    }`, {
+          id: idSlide
+      }).pipe(map(v => v.slide));
 
   }
 }
