@@ -3,7 +3,7 @@
   <div class="anwsers">
     <div *ngFor="let answer of slide.answers" class="anwser">
       {{ answer.text }}
-      <span class="participants">{{ answer.participants.length }}</span>
+      <span class="participants" *ngIf="answer.participants">{{ answer.participants.length }}</span>
     </div>
   </div>
 </div>

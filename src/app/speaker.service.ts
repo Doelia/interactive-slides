@@ -49,6 +49,27 @@ export class SpeakerService {
     });
   }
 
+  getSlideWithParticipants(idSlide: string) {
+    return this.client.request(`
+      query ($idSlide: ID!) {
+        slides(where: {
+          id: $idSlide
+        }) {
+            id
+            text
+            answers {
+              text
+              participants {
+                token
+              }
+            }
+          }
+      }
+    `, {
+      idSlide
+    }).pipe(map(v => v.slides[0]));
+  }
+
   clearAllResponses() {
 
   }
